@@ -133,9 +133,7 @@ $direction		= listingo_get_location_lat_long();
 								<div class="tg-companycontent tg-authorfeature">
 									<div class="tg-featuredetails">
 										<div class="tg-title">
-											<h2>
-												<?php do_action('listingo_get_ad_title',$post->ID,get_the_title());?>
-											</h2>											
+											<h2><?php do_action('listingo_get_ad_title',$post->ID,get_the_title());?></h2>											
 										</div>									
 										<?php do_action('listingo_get_ad_address',$post->ID);?>
 									</div>

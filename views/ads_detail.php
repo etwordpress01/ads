@@ -81,14 +81,12 @@ get_header();
 									<?php do_action('listingo_get_ad_featured_tag', $post->ID ); ?>
 									<div class="tg-detailheader tg-sectionpaddingvtwo">
 										<div class="tg-title">
-											<h2>
-												<?php do_action('listingo_get_ad_title',$post->ID,get_the_title());?>
-											</h2>
+											<h2><?php do_action('listingo_get_ad_title',$post->ID,get_the_title());?></h2>
 										</div>
 										<ul class="tg-postarticlemetavtwo">
 											<li class="tg-postclock">
 												<i class="fa fa-clock-o"></i>				
-												<?php do_action('lsitingo_get_ad_status', $post->ID);?>
+												<?php do_action('listingo_get_ad_status', $post->ID);?>
 											</li>
 											<li class="tg-poststar">
 												<i class="fa fa-star"></i>

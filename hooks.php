@@ -192,31 +192,31 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 		$required_fields	= array(
 			'pricing_type' => array(
 				'required'  => true,
-				'message'	=> esc_html__('Pricing Type is required','listigo')
+				'message'	=> esc_html__('Pricing Type is required','listingo')
 			),
 			'price' => array(
 				'required'  => true,
-				'message'	=> esc_html__('Price is required','listigo')
+				'message'	=> esc_html__('Price is required','listingo')
 			),
 			'address' => array(
 				'required'  => true,
-				'message'	=> esc_html__('Address is required','listigo')
+				'message'	=> esc_html__('Address is required','listingo')
 			),
 			'longitude' => array(
 				'required'  => true,
-				'message'	=> esc_html__('Longitude is required','listigo')
+				'message'	=> esc_html__('Longitude is required','listingo')
 			),
 			'longitude' => array(
 				'required'  => true,
-				'message'	=> esc_html__('Latitude is required','listigo')
+				'message'	=> esc_html__('Latitude is required','listingo')
 			),
 			'country' => array(
 				'required'  => true,
-				'message'	=> esc_html__('Country is required','listigo')
+				'message'	=> esc_html__('Country is required','listingo')
 			),
 			'city' => array(
 				'required'  => true,
-				'message'	=> esc_html__('City is required','listigo')
+				'message'	=> esc_html__('City is required','listingo')
 			)
 		);
 		
@@ -1008,9 +1008,7 @@ if (!function_exists('listingo_get_ad_meta')) {
 		}
 		?>
 		<ul class="tg-authorperform">
-			<li>
-				<i class="lnr lnr-clock"></i><?php do_action('lsitingo_get_ad_status', $ad_id); ?>
-			</li>
+			<li><i class="lnr lnr-clock"></i><?php do_action('listingo_get_ad_status', $ad_id); ?></li>
 			<?php if( !empty( $price_types[$dbpricing_type]['title'] ) ){ ?>
 				<li><i class="lnr lnr-cart"></i><?php echo esc_attr($price_types[$dbpricing_type]['title']); ?></li>
 			<?php } ?>
@@ -1498,8 +1496,8 @@ if (!function_exists('listingo_get_ad_author_box')) {
 /*
 * Get open/close status
 */
-if( !function_exists('lsitingo_get_ad_status')){
-	function lsitingo_get_ad_status( $post_id = ''){
+if( !function_exists('listingo_get_ad_status')){
+	function listingo_get_ad_status( $post_id = ''){
 		if( !empty( $post_id ) ) {
 			ob_start();
 			$time_zone 			= get_post_meta( $post_id, '_timezone', true );	
@@ -1528,7 +1526,7 @@ if( !function_exists('lsitingo_get_ad_status')){
 		  	$current_time 	= strtotime($today_time);	
 			
 			// default status
-			$status = esc_html__('Closed','lsitingo');
+			$status = esc_html__('Closed','listingo');
 			$timestart = '';
 			$timeclose = '';
 			if( !empty( $time_details[$today_day]['starttime'] ) && !empty( $time_details[$today_day]['endtime'] ) ) {				
@@ -1537,7 +1535,7 @@ if( !function_exists('lsitingo_get_ad_status')){
 			} 		
 			
 			if( ( $current_time >= $timestart ) && ( $current_time <= $timeclose ) ){			
-				$status = esc_html__('Open','lsitingo');		
+				$status = esc_html__('Open','listingo');		
 			} 			
 			?>
 			<span><?php echo esc_attr( $status );?></span>
@@ -1545,7 +1543,7 @@ if( !function_exists('lsitingo_get_ad_status')){
 			echo ob_get_clean();
 		} 
 	}
-	add_action('lsitingo_get_ad_status', 'lsitingo_get_ad_status', 10, 1);
+	add_action('listingo_get_ad_status', 'listingo_get_ad_status', 10, 1);
 }
 
 /**
