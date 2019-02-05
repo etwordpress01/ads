@@ -374,31 +374,6 @@ jQuery(document).on('ready', function () {
 
     });    
 
-    //GET QR Code
-    jQuery(document).on('click', '.tg-qrcodedetails', function (e) {
-        e.preventDefault();
-        jQuery('body').append(loader_html);
-            var _this = jQuery(this);
-            var id = _this.data('key'); 
-            var type = _this.data('type');  
-            var dataString = 'key=' + id + '&type=' + type + '&action=listingo_generate_qr_code';   
-            jQuery.ajax({
-            type: "POST",
-            url: scripts_vars.ajaxurl,
-            data: dataString,
-            dataType: "json",
-            success: function (response) {
-            jQuery('body').find('.provider-site-wrap').remove();
-            if (response.type === 'success') {  
-                jQuery('.tg-qr-img').attr('src', response.key);
-                jQuery('.tg-qrscan figcaption').remove();
-            } else {
-                jQuery.sticky(response.message, {classList: 'important',position:'center-center', speed: 200, autoclose: 5000});
-            }
-        }
-        });
-    });
-
     //Ad Form Submision 
     jQuery(document).on('click', '.tg-submit-ad-form', function (e) {
         e.preventDefault();

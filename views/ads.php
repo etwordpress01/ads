@@ -49,7 +49,7 @@ $count_post = $query->found_posts;
 					<div class="tg-title">
 						<h5><?php esc_html_e('Ads By','listingo');?>&nbsp;“<?php echo esc_attr( $provider_name );?>”</h5>
 					</div>
-					<div class="addfeatures">
+					<div class="addfeatures tg-user-provider-ads">
 						<?php 
 							if ( $query->have_posts() ) :
 								while ( $query->have_posts() ) : $query->the_post();

@@ -14,11 +14,11 @@ if (!function_exists('fw_ext_ads_sp_allow_uploads')) {
 
 	function fw_ext_ads_sp_allow_uploads() {
 
-		/**
-		 * Redirect User if current user is not
-		 * Admin.
-		 */
-		if (is_admin() && !current_user_can('administrator') && !( defined('DOING_AJAX') && DOING_AJAX )) {
+		//redirect if admin side and roles are in[professional,customer,business]
+		if (is_admin() 
+			&& ( current_user_can('professional') || current_user_can('customer') || current_user_can('business')  ) 
+			&& !( defined('DOING_AJAX') && DOING_AJAX )
+		) {
 			wp_redirect(home_url('/'));
 		}
 
@@ -207,96 +207,7 @@ if (!function_exists('listingo_ad_price_type')) {
 	}
 }
 
-/**
- * 
- * Generate QR code
- *
- * @global 
- *
- * @param qr image
- */
-if( !function_exists( 'listingo_generate_qr_code' ) ) {
-    function listingo_generate_qr_code(){        
-        $user_id = !empty( $_POST['key'] ) ? $_POST['key'] : '';  
-        $type    = !empty( $_POST['type'] ) ? $_POST['type'] : '';        
-        if( file_exists( WP_PLUGIN_DIR. '/listingo_core/libraries/phpqrcode/phpqrcode.php' ) ){
-            if( !empty( $user_id ) && !empty( $type ) ) {  
-                require_once(WP_PLUGIN_DIR. '/listingo_core/libraries/phpqrcode/phpqrcode.php' );
-                if( $type === 'user' ){
-                    $user_link      = get_author_posts_url( $user_id );
-                    $data_type = 'user-';
-                } else if( $type === 'post' ) {
-                    $user_link      = get_permalink( $user_id );
-                    $data_type = 'post-';
-                }
-				
-                $tempDir        = wp_upload_dir();                  
-                $codeContents   = esc_url($user_link);      
-                $tempUrl    = trailingslashit($tempDir['baseurl']);
-                $tempUrl    = $tempUrl.'/qr-code/'.$data_type.$user_id.'/';            
-                $upload_dir = trailingslashit($tempDir['basedir']);
-                $upload_dir = $upload_dir .'qr-code/';                             
-                if (! is_dir($upload_dir)) {
-                    mkdir( $upload_dir, 0777 );
-                    //qr-code directory created
-                    $upload_folder = $upload_dir.$data_type.$user_id.'/';                
-                    if (! is_dir($upload_folder)) {
-                        mkdir( $upload_folder, 0777 );
-                        //Create image
-                        $fileName = $user_id.'.png';      
-                        $qrAbsoluteFilePath = $upload_folder.$fileName; 
-                        $qrRelativeFilePath = $tempUrl.$fileName;     
-                    } 
-                } else {
-                    //create user directory
-                    $upload_folder = $upload_dir.$data_type.$user_id.'/';              
-                    if (! is_dir($upload_folder)) {
-                        mkdir( $upload_folder, 0777 );
-                        //Create image
-                        $fileName = $user_id.'.png';      
-                        $qrAbsoluteFilePath = $upload_folder.$fileName; 
-                        $qrRelativeFilePath = $tempUrl.$fileName;     
-                    } else {
-                        $fileName = $user_id.'.png';      
-                        $qrAbsoluteFilePath = $upload_folder.$fileName; 
-                        $qrRelativeFilePath = $tempUrl.$fileName;     
-                    }
-                }                
-                //Delete if exists
-                if (file_exists($qrAbsoluteFilePath)) { 
-                    wp_delete_file( $qrAbsoluteFilePath );
-                    QRcode::png($codeContents, $qrAbsoluteFilePath, QR_ECLEVEL_L, 3);                        
-                } else {
-                    QRcode::png($codeContents, $qrAbsoluteFilePath, QR_ECLEVEL_L, 3);            
-                }           
-                
-                if( !empty( $qrRelativeFilePath ) ) {
-                        $json['type'] = 'success';
-                        $json['message'] = esc_html__('', 'listingo');
-                        $json['key'] = $qrRelativeFilePath;
-                        echo json_encode($json);
-                        die;
-                }     
-                $json['type'] = 'error';
-                $json['message'] = esc_html__('Some thing went wrong.', 'listingo');
-                echo json_encode($json);
-                die;  
-            } else {
-                $json['type'] = 'error';
-                $json['message'] = esc_html__('Some thing went wrong.', 'listingo');
-                echo json_encode($json);
-                die; 
-            }
-        } else {
-            $json['type'] = 'error';
-            $json['message'] = esc_html__('Please update your plugin', 'listingo');
-            echo json_encode($json);
-            die;
-        }
-    }
-    add_action('wp_ajax_listingo_generate_qr_code', 'listingo_generate_qr_code');
-    add_action('wp_ajax_nopriv_listingo_generate_qr_code', 'listingo_generate_qr_code');
-}
+
 
 /**
  * 
@@ -322,7 +233,7 @@ if( !function_exists( 'listingo_add_ads_comment' ) ) {
     	
 		$post_author_id = get_post_field( 'post_author', $post_id );
 		
-		if ( $author_id !== $user_id ) { 
+		if ( $author_id === $user_id ) { 
 			$json['type'] = 'error';
 	        $json['message'] = esc_html__('You can\'t leave your review on your own post.', 'listingo');
 	        wp_send_json($json);
@@ -333,11 +244,17 @@ if( !function_exists( 'listingo_add_ads_comment' ) ) {
 	        $json['message'] = esc_html__('All the fields are required.', 'listingo');
 	        wp_send_json($json);
 		}		
-
-    	$user_commented_ads = get_user_meta($user_id, 'user_commented_ads', true);
-		$user_commented_ads	= !empty( $user_commented_ads ) ? $user_commented_ads : array();
 		
-    	if( is_array( $user_commented_ads) && in_array($post_id, $user_commented_ads) ) {
+		$comment_args = array(
+			'post_id' => $post_id,
+			'post_type' => 'sp_ads',
+			'user_id' => $user_id,
+		);
+
+		$author_comments = get_comments($comment_args);
+    	$user_commented_ads = count($author_comments);
+
+    	if( !empty( $user_commented_ads ) ) {
     		//User already commented here
     		$json['type'] = 'error';
 	        $json['message'] = esc_html__('You already added your review', 'listingo');
@@ -533,27 +450,6 @@ if ( ! function_exists( 'listingo_get_ads_page_uri' ) ) {
 	}
 }
 
-/**
- * get search page uri
- *
- * @param json
- * @return string
- */
-if ( ! function_exists( 'listingo_get_ads_search_page_uri' ) ) {
-    function listingo_get_ads_search_page_uri() {
-		if (function_exists('fw_get_db_settings_option')) {
-			$dir_adssearch_uri = fw_get_db_settings_option('dir_adssearch_uri');
-		}
-		
-		if (isset($dir_adssearch_uri[0]) && !empty($dir_adssearch_uri[0])) {
-			$search_page = get_permalink((int) $dir_adssearch_uri[0]);
-		} else {
-			$search_page = '';
-		}
-		
-		return $search_page;
-	}
-}
 
 /* @Get ad tags
  * $return {HTML}

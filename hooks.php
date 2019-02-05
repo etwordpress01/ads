@@ -1280,38 +1280,6 @@ if (!function_exists('listingo_delete_favorite_ads')) {
 }
 
 /**
- * @get QR code
- * @return 
- */
-if (!function_exists('listingo_get_qr_code')) {
-	add_action('listingo_get_qr_code', 'listingo_get_qr_code',10,2);
-    function listingo_get_qr_code($type='user',$id='') {
-		?>
-		<div class="tg-authorcodescan">
-			<div class="tg-qrscan">
-				<figure>
-					<img class="tg-qr-img" 
-					src="<?php echo get_template_directory_uri() ; ?>/images/qrcode.png" 
-					alt="<?php esc_html_e('image-discripton', 'listingo'); ?>">
-					<figcaption>
-					<a href="javascript:;" class="tg-qrcodedetails" data-type="<?php echo esc_attr( $type ); ?>" data-key="<?php echo esc_attr( $id ); ?>">
-						<span><i class="lnr lnr-redo"></i><?php esc_html_e('load', 'listingo'); ?><br><?php esc_html_e('QR code', 'listingo'); ?></span>
-					</a>
-				</figcaption>
-				</figure>
-			</div>
-			<div class="tg-qrcodedetail">
-				<span class="lnr lnr-laptop-phone"></span>
-				<div class="tg-qrcodefeat">
-	                <h3><?php esc_html_e('Scan with your', 'listingo'); ?> <span><?php echo esc_html_e('Smart Phone', 'listingo'); ?> </span> <?php esc_html_e('To Get It Handy.', 'listingo'); ?></h3>
-	            </div>	
-            </div>	
-		</div>
-		<?php
-	}
-}
-
-/**
  * @get social share v2
  * @return 
  */
@@ -1585,7 +1553,7 @@ if (!function_exists('listingo_get_ads_search_filtrs')) {
 								<button class="tg-btn tg-btnvtwo" type="submit"><?php esc_html_e('Apply Filter', 'listingo'); ?></button>
 							</div>
 						</div>
-						<div class="tg-filterdetails">
+						<div class="tg-filterdetails tg-themescrollbar">
 							<div class="tg-themeform tg-filterform">
 								<div class="tg-filterholder">
 									<div class="tg-title"><h4><?php esc_html_e('Amenities', 'listingo'); ?> :</h4></div>
@@ -1797,4 +1765,95 @@ if( !function_exists('listingo_featured_ad_selection') ){
 		} 		
 	}
 	add_action('listingo_featured_ad_selection', 'listingo_featured_ad_selection', 10, 2);
+}
+
+/**
+ * ad comments listings
+ * @return slug
+ */
+if (!function_exists('listingo_ads_comments')) {
+
+    function listingo_ads_comments($comment, $args, $depth) {
+        global $post, $comment;
+        $GLOBALS['comment'] = $comment;
+        $args['reply_text'] = '<i class="fa fa-mail-reply"></i>';
+        $like = 'like';
+        $dislike = 'dislike';
+        $total_likes        = get_comment_meta(get_comment_ID(), 'likes', true);       
+        $total_dislikes     = get_comment_meta(get_comment_ID(), 'dislikes', true);
+        $total_likes        = !empty( $total_likes ) ? $total_likes : 0;
+        $total_dislikes     = !empty( $total_dislikes ) ? $total_dislikes : 0;    
+        $gallery_files      = get_comment_meta( get_comment_ID(), 'gallery_files', true );
+        $comment_author_id  = $comment ->user_id;                         
+        ?>        
+        <div class="tg-interviewprocess">     
+        <figure><?php echo get_avatar($comment, 80); ?> </figure>
+        <div class="tg-title">
+            <h2><a href="<?php echo get_author_posts_url($comment_author_id); ?>">
+                    <?php comment_author(); ?>
+                </a>                            
+            </h2>
+            <span>
+                <?php printf( _x( '%s Ago', '%s = human-readable time difference', 'listingo' ), human_time_diff( get_comment_time( 'U' ), current_time( 'timestamp' ) ) ); ?>                            
+            </span>  
+        </div>
+        <div class="tg-description">
+            <?php if ($comment->comment_approved == '0') : ?>
+                <p class="comment-moderation"><?php esc_html_e('Your comment is awaiting moderation.', 'listingo'); ?></p>
+            <?php endif; ?>
+            <?php comment_text(); ?>
+        </div>
+        <?php            
+		if( !empty( $gallery_files ) ) { ?>
+			<div class="tg-reviewsgallery">
+				<?php                    
+					$counter = 0;
+					$more_class = '';
+					foreach ($gallery_files as $value) {
+						$width              = 170;
+						$height             = 170; 
+						$image              = listingo_prepare_image_source($value, $width, $height );
+						$full_image         = wp_get_attachment_url( $value );        
+						$counter++;
+						if( $counter === 3){
+							$more_class = 'tg-moreimgs';
+						}
+						if( $counter < 4 ){
+						if( !empty( $image ) && !empty( $full_image ) ) {
+				?>                        
+					<figure class="<?php echo esc_attr( $more_class ); ?>">
+							<?php if( $counter === 3){ ?>
+								<img src="<?php echo esc_url( $image ); ?>">
+								<figcaption>
+									<a class="tg-comment-gallery spv-ag-gallery" href="<?php echo esc_url( $full_image ); ?>" data-rel="prettyPhoto<?php echo esc_attr( get_comment_ID() ); ?>[gallery]" rel="prettyPhoto<?php echo esc_attr( get_comment_ID() ); ?>[gallery]"><?php esc_html_e('View More', 'listingo'); ?></a>
+								</figcaption>
+
+							<?php } else { ?>
+								<a class="spv-ag-gallery" href="<?php echo esc_url( $full_image ); ?>" data-rel="prettyPhoto<?php echo esc_attr( get_comment_ID() ); ?>[gallery]" rel="prettyPhoto<?php echo esc_attr( get_comment_ID() ); ?>[gallery]">
+								<img src="<?php echo esc_url( $image ); ?>"></a>    
+							<?php } ?>
+						</a>
+					</figure>
+				<?php } } } ?>
+			</div>
+			<?php 
+				$script = '
+				jQuery("a[data-rel^=prettyPhoto'.get_comment_ID().']").prettyPhoto({
+					animation_speed: "normal",
+					theme: "dark_square",
+					slideshow: 3000,
+					autoplay_slideshow: false,
+					social_tools: false
+			});';                    
+				wp_add_inline_script('listingo_callbacks', $script, 'after');
+			?>              
+		<?php } ?>
+		<div class="tg-likebtns">
+			<a href="javascript:;" class="tg-btnlikevtwo tg-add-ad-like" data-type="<?php echo esc_attr( $like ); ?>" data-id="<?php echo esc_attr( get_comment_ID() ); ?>" data-post="<?php echo esc_attr( $post->ID ); ?>"><i class="fa fa-thumbs-up">&nbsp;<?php echo esc_attr( $total_likes ); ?>&nbsp;</i> <?php esc_html_e('Likes', 'listingo'); ?></a>
+			<a href="javascript:;" class="tg-btndislike tg-add-ad-like" data-type="<?php echo esc_attr( $dislike ); ?>" data-id="<?php echo esc_attr( get_comment_ID() ); ?>" data-post="<?php echo esc_attr( $post->ID ); ?>"><i class="fa fa-thumbs-down">&nbsp;<?php echo esc_attr( $total_dislikes ); ?>&nbsp;</i><?php esc_html_e('Dislikes', 'listingo'); ?></a>    
+			</div>            
+		</div>
+	<?php   
+	}
+
 }
