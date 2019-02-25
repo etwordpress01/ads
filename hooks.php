@@ -210,14 +210,6 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 				'required'  => true,
 				'message'	=> esc_html__('Latitude is required','listingo')
 			),
-			'country' => array(
-				'required'  => true,
-				'message'	=> esc_html__('Country is required','listingo')
-			),
-			'city' => array(
-				'required'  => true,
-				'message'	=> esc_html__('City is required','listingo')
-			)
 		);
 		
 		$required_fields = apply_filters('listingo_ad_required_options',$required_fields);

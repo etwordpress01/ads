@@ -156,7 +156,7 @@ $timezones = apply_filters('listingo_time_zones', array());
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
 													<div class="form-group">
 														<span class="tg-select">
-															<select name="ad[categories][]" multiple class="sp-sub-categories">
+															<select name="ad[categories][]" data-placeholder="<?php esc_html_e('Select categories', 'listingo'); ?>" multiple class="sp-sub-categories">
 																<option value=""><?php esc_html_e('Select categories', 'listingo'); ?></option>
 																<?php listingo_get_term_options_with_key($sub_category, 'ad_category'); ?>
 															</select>
@@ -176,7 +176,7 @@ $timezones = apply_filters('listingo_time_zones', array());
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
 													<div class="form-group">
 														<span class="tg-select">
-															<select name="ad[tags][]" multiple class="sp-sub-categories">
+															<select name="ad[tags][]" data-placeholder="<?php esc_html_e('Select tags', 'listingo'); ?>" multiple class="sp-sub-categories">
 																<option value=""><?php esc_html_e('Select tags', 'listingo'); ?></option>
 																<?php listingo_get_term_options_with_key($ad_tags, 'ad_tags'); ?>
 															</select>
@@ -195,7 +195,7 @@ $timezones = apply_filters('listingo_time_zones', array());
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
 													<div class="form-group">
 														<span class="tg-select">
-															<select name="ad[amenities][]" multiple class="sp-sub-categories">
+															<select name="ad[amenities][]" data-placeholder="<?php esc_html_e('Select amenities', 'listingo'); ?>" multiple class="sp-sub-categories">
 																<option value=""><?php esc_html_e('Select amenities', 'listingo'); ?></option>
 																<?php listingo_get_term_options_with_key($amenities, 'ad_amenity'); ?>
 															</select>
