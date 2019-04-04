@@ -57,7 +57,7 @@ if( $related_query->have_posts() ){ ?>
                         <div class="tg-automotive">                           
                             <?php do_action('listingo_get_ad_featured_tag', $post->ID ); ?>
                             <figure class="tg-featuredimg tg-authorlink">
-                                    <img src="<?php echo esc_url( $thumbnail );?>" alt="<?php the_title();?>">
+                                <div class="ad-media-wrap"><img src="<?php echo esc_url( $thumbnail );?>" alt="<?php the_title();?>"></div>
                                 <?php do_action('listingo_get_ad_category',$post->ID);?>
                                 <?php do_action('listingo_print_favorite_ads',$post->ID,$author_id);?>
                             </figure>

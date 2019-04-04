@@ -1,5 +1,4 @@
 <?php
-
 if (!defined('FW')) {
     die('Forbidden');
 }
@@ -194,10 +193,7 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 				'required'  => true,
 				'message'	=> esc_html__('Pricing Type is required','listingo')
 			),
-			'price' => array(
-				'required'  => true,
-				'message'	=> esc_html__('Price is required','listingo')
-			),
+			
 			'address' => array(
 				'required'  => true,
 				'message'	=> esc_html__('Address is required','listingo')
@@ -209,6 +205,14 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 			'longitude' => array(
 				'required'  => true,
 				'message'	=> esc_html__('Latitude is required','listingo')
+			),
+			'country' => array(
+				'required'  => false,
+				'message'	=> esc_html__('','listingo')
+			),
+			'city' => array(
+				'required'  => false,
+				'message'	=> esc_html__('','listingo')
 			),
 		);
 		
@@ -591,13 +595,13 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
                 $json['message'] = esc_html__('ad updated successfully.', 'listingo');
             } else {
                 $json['type'] = 'error';
-                $json['message'] = esc_html__('Some error occur, please try again later.', 'listingo');
+                $json['message'] = esc_html__('An error occurred, please try again later', 'listingo');
                 echo json_encode($json);
                 die;
             }
         } else {
             $json['type'] = 'error';
-            $json['message'] = esc_html__('Some error occur, please try again later.', 'listingo');
+            $json['message'] = esc_html__('An error occurred, please try again later', 'listingo');
             echo json_encode($json);
             die;
         }
@@ -877,7 +881,7 @@ if (!function_exists('fw_ext_listingo_delete_ads')) {
             die;
         } else {
             $json['type'] = 'error';
-            $json['message'] = esc_html__('Some error occur, please try again later.', 'listingo');
+            $json['message'] = esc_html__('An error occurred, please try again later', 'listingo');
             echo json_encode($json);
             die;
         }
@@ -1540,7 +1544,6 @@ if (!function_exists('listingo_get_ads_search_filtrs')) {
 								<div class="tg-title">
 									<h3><?php esc_html_e('Narrow Your Search', 'listingo'); ?></h3>
 								</div>
-								<fieldset class="subcat-search-wrap"></fieldset>
 								<?php do_action('listingo_get_search_permalink_setting');?>
 								<button class="tg-btn tg-btnvtwo" type="submit"><?php esc_html_e('Apply Filter', 'listingo'); ?></button>
 							</div>

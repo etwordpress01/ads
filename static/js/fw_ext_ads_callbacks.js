@@ -12,7 +12,7 @@ jQuery(document).on('ready', function () {
 	var sp_upload_nonce = scripts_vars.sp_upload_nonce;
     var is_loggedin = fw_ext_ads_scripts_vars.is_loggedin;
     var sp_upload_gallery = scripts_vars.sp_upload_gallery;
-	
+
 	//ad collaps
 	jQuery(document).on('click', '.spv-collap-config', function (event) {
 		event.preventDefault();

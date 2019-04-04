@@ -16,13 +16,26 @@
 	$fax = '';
 	$email = '';
 	$website = '';
+	$longitude = '';
+	$latitude = '';
+
 	if (function_exists('fw_get_db_post_option')) {		
 		$address = fw_get_db_post_option($post->ID, 'address', true);
 		$phone = fw_get_db_post_option($post->ID, 'phone', true);
 		$fax = fw_get_db_post_option($post->ID, 'fax', true);
 		$email = fw_get_db_post_option($post->ID, 'email', true);
 		$website = fw_get_db_post_option($post->ID, 'website', true);
+		$longitude = fw_get_db_post_option($post->ID, 'longitude', true);
+		$latitude = fw_get_db_post_option($post->ID, 'latitude', true);
+		$dir_map_marker = fw_get_db_settings_option('dir_map_marker');
+    	$dir_map_marker = !empty($dir_map_marker['url']) ? $dir_map_marker['url'] : '';
+		
 	}
+
+	if (empty($dir_map_marker)) {
+		$dir_map_marker = get_template_directory_uri() . '/images/map-marker.png';
+	}
+
 	if( !empty( $social_links ) ) {
 		foreach ($social_links as $key => $value) {
 			if (function_exists('fw_get_db_post_option')) {
@@ -40,31 +53,24 @@
 			}
 		}
 	}
+
 	if( !empty( $address ) || !empty( $social[0] ) ) {	
+	
+		$sp_usersdata = array();
+		$adinfo['adinfo']	=  array();
+
+		$sp_usersdata['marker'] 	= $dir_map_marker;
+		$sp_usersdata['longitude'] 	= $longitude;
+		$sp_usersdata['latitude'] 	= $latitude;
+		$sp_usersdata['address'] 	= $address;
+		$adinfo['adinfo'][]  = $sp_usersdata;
 ?>
 <div class="tg-widget tg-widgetvtwo">
 	<?php if( !empty( $address ) ){?>		
 		<div id="tg-locationmapvtwo" class="tg-locationmapvtwo"></div>
-		<?php			
-			wp_enqueue_script('gmap3');
-			wp_enqueue_script('listingo_maps');
-			$map_script ='jQuery("#tg-locationmapvtwo").gmap3({
-				marker: {
-					address: "'.$address.'",
-					options: {
-						title: "'.$address.'",
-						icon: "'.get_template_directory_uri().'/images/markerseven.png",
-					}
-				},
-				map: {
-					options: {
-						zoom: 20,
-						scrollwheel: false,
-						disableDoubleClickZoom: true,
-					}
-				}
-			});';
-			wp_add_inline_script('listingo_maps', $map_script, 'after');
+		<?php
+			$script = "jQuery(document).ready(function () {listingo_init_ad_map_script(" . json_encode($adinfo) . ");});";
+			wp_add_inline_script('listingo_gmaps', $script, 'after');
 		?>
     <?php }?>
 	<div class="tg-contactinfoboxvtwo">

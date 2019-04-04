@@ -8,7 +8,7 @@
  * @since 1.0
  */
 global $paged, $query_args, $showposts, $wp_query;
-$per_page = 9;
+$per_page = get_option('posts_per_page');;
 $pg_page = get_query_var('page') ? get_query_var('page') : 1; //rewrite the global var
 $pg_paged = get_query_var('paged') ? get_query_var('paged') : 1; //rewrite the global var
 //paged works on single pages, page - works on homepage
@@ -106,9 +106,9 @@ $query_args = array(
 
 //featured on top by default
 if( empty( $sort_by ) ){
-	$query_args['order'] 	= 'DESC';
+	/*$query_args['order'] 	= 'DESC';
 	$query_args['orderby'] 	= 'meta_value_num';
-	$query_args['meta_key'] = '_featured_timestamp';
+	$query_args['meta_key'] = '_featured_timestamp';*/
 }
 
 //meta query

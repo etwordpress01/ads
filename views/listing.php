@@ -64,7 +64,7 @@ $count_post = $query->found_posts;
                 <h2><?php esc_html_e('Manage Ads', 'listingo'); ?><?php do_action('listingo_get_tooltip','section','ads');?></h2>
             </div>
             <div class="tg-btnaddservices">
-                <a href="<?php Listingo_Profile_Menu::listingo_profile_menu_link($profile_page, 'ads', $url_identity, '', 'add'); ?>"><?php esc_html_e('Add New Ad', 'listingo'); ?></a>
+                <a href="<?php Listingo_Profile_Menu::listingo_profile_menu_link($profile_page, 'ads', $url_identity, '', 'add'); ?>"><?php esc_html_e('Create New Ad', 'listingo'); ?></a>
             </div>
         </div>
         <?php if ($query->have_posts()) { ?>

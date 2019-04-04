@@ -66,7 +66,7 @@ $count_post = $query->found_posts;
 							<div class="tg-automotive">
 								<figure class="tg-featuredimg tg-authorlink">
 									<?php do_action('listingo_get_ad_featured_tag',$post->ID);?>
-									<img src="<?php echo esc_url( $thumbnail );?>" alt="<?php the_title();?>">
+									<div class="ad-media-wrap"><img src="<?php echo esc_url( $thumbnail );?>" alt="<?php the_title();?>"></div>
 									<?php do_action('listingo_get_ad_category',$post->ID);?>
 								</figure>
 								<div class="tg-companycontent tg-authorfeature">

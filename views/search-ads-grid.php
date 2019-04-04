@@ -25,8 +25,8 @@ $ads_data = new WP_Query($query_args);
 $total_posts	= $ads_data->found_posts;
 $direction		= listingo_get_location_lat_long();
 ?>
-<div class="ad-search-result tg-haslayout">
-	<div class="container-fluid">
+<div class="ad-search-result tg-listingvtwo tg-haslayout">
+	<div class="container-fluid spv-map">
 	   <div class="row">
 		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
 			 <div class="spv-formtheme tg-ad-search-form">
@@ -85,6 +85,7 @@ $direction		= listingo_get_location_lat_long();
 						if( empty( $thumbnail ) ) {
                         	$thumbnail = get_template_directory_uri().'/images/placeholder-360x240.jpg';
                     	} 
+					
 						$post_author_id	= $post->post_author;						
 						$post_title	= get_the_title();
 						$post_link	= get_the_permalink();
@@ -93,6 +94,8 @@ $direction		= listingo_get_location_lat_long();
 						$sp_addata['longitude'] = get_post_meta($post->ID,'longitude' ,true);
 						$address = fw_get_db_post_option($post->ID, 'address', true);
 						$sp_addata['title'] 	= $post_title;
+					
+						$featured_timestamp  = get_post_meta($post->ID,'_featured_timestamp' ,true);
 
 						$infoBox = '';
 						$infoBox .= '<div class="tg-infoBox svp-ad-infobox">';
@@ -121,19 +124,19 @@ $direction		= listingo_get_location_lat_long();
 						$sp_addata['html']['content'] = $infoBox;
 						$sp_adslist['ads_list'][] = $sp_addata;
 					?>
-				   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 tg-verticaltop">
+				   <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4 tg-verticaltop" data-date="<?php echo esc_attr($featured_timestamp);?>">
 					   <div class="tg-oneslides  tg-automotivegrid">
 						  <div class="tg-automotive">
 								<figure class="tg-featuredimg tg-authorlink">				
 									<?php do_action('listingo_get_ad_featured_tag', $post->ID ); ?>									
-									<img src="<?php echo esc_url( $thumbnail );?>" alt="<?php the_title();?>">
+									<div class="ad-media-wrap"><img src="<?php echo esc_url( $thumbnail );?>" alt="<?php the_title();?>"></div>
 									<?php do_action('listingo_get_ad_category',$post->ID);?>
 									<?php do_action('listingo_print_favorite_ads',$post->ID,$post_author_id);?>
 								</figure>
 								<div class="tg-companycontent tg-authorfeature">
 									<div class="tg-featuredetails">
 										<div class="tg-title">
-											<h2><?php do_action('listingo_get_ad_title',$post->ID,get_the_title());?></h2>											
+											<h2><?php do_action('listingo_get_ad_title',$post->ID,get_the_title());?></h2>		
 										</div>									
 										<?php do_action('listingo_get_ad_address',$post->ID);?>
 									</div>
@@ -165,11 +168,7 @@ $direction		= listingo_get_location_lat_long();
 				 
 			 </div>
 		  </div>
-		  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 pull-right">
-			 <div class="row">
-				<div class="spv-map"><?php do_action('listingo_get_search_map_right'); ?></div>
-			 </div>
-		  </div>
+		  <?php do_action('listingo_get_search_map_right'); ?>
 	   </div>
 	</div>
  </div>

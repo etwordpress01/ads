@@ -13,13 +13,11 @@ if (!function_exists('fw_ext_ads_sp_allow_uploads')) {
 	add_action('init', 'fw_ext_ads_sp_allow_uploads');
 
 	function fw_ext_ads_sp_allow_uploads() {
-
+		
+		$user = wp_get_current_user();
 		//redirect if admin side and roles are in[professional,customer,business]
-		if (is_admin() 
-			&& ( current_user_can('professional') || current_user_can('customer') || current_user_can('business')  ) 
-			&& !( defined('DOING_AJAX') && DOING_AJAX )
-		) {
-			wp_redirect(home_url('/'));
+		if ( is_admin() && ( current_user_can('professional') || current_user_can('customer') || current_user_can('business')  ) ) {
+			//wp_redirect(home_url('/'));
 		}
 
 		//Professional users
@@ -148,7 +146,7 @@ if (!function_exists('listingo_replace_post_author_meta_box')) {
 			if ( post_type_supports( $post_type, 'author' ) ) {
 				if ( is_super_admin() || current_user_can( $post_type_object->cap->edit_others_posts ) ) {
 					remove_meta_box( 'authordiv', $post_type, 'core' );
-					add_meta_box( 'authordiv', esc_html__( 'Author', 'listingo' ), 'listingo_post_author_meta_box', null, 'normal' );
+					add_meta_box( 'authordiv', esc_html__( 'Authorssss', 'listingo' ), 'listingo_post_author_meta_box', null, 'normal' );
 				}
 			}
 		}

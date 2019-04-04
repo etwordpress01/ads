@@ -25,11 +25,11 @@ if ( !empty( $videos[0] ) ) { ?>
             <?php 
 			foreach ($videos as $key => $media) {
 				if( !empty( $media ) ){?>
-                <li>
+                <li class="tg-verticaltop">
                     <div class="tg-videobox">
                         <?php
                         $media_url  = parse_url($media);
-                        $height 	= 210;
+                        $height 	= 208;
                         $width 		= 370;
 
                         $url = parse_url($media);
