@@ -1375,12 +1375,12 @@ if (!function_exists('listingo_get_ad_author_box')) {
 						</div>
 						<div class="tg-box">
 							<label class="tg-fileuploadlabel" for="tg-photogallery">
-								<a href="javascript:;" id="upload-ad-comment-photos" class="tg-fileinput sp-upload-container">
-									<i class="lnr lnr-cloud-upload"></i>
-									<span><?php esc_html_e('Or Drag Your Files Here To Upload', 'listingo'); ?></span>
-
-								</a>
-								<div id="plupload-ad-comment-container"></div> 
+								<div id="plupload-ad-comment-container">
+									<a href="javascript:;" id="upload-ad-comment-photos" class="tg-fileinput sp-upload-container">
+										<i class="lnr lnr-cloud-upload"></i>
+										<span><?php esc_html_e('Or Drag Your Files Here To Upload', 'listingo'); ?></span>
+									</a>
+								</div> 
 							</label>
 							<div class="tg-ad-comment-gallery sp-profile-ad-photos">
 								<div class="tg-galleryimages">

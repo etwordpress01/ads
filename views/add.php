@@ -10,7 +10,7 @@
 global $current_user;
 $user_identity = $current_user->ID;
 $content = esc_html__('Add your ad content here.', 'listingo');
-$settings = array('media_buttons' => false,'quicktags' => false);
+$settings = array('media_buttons' => false,'quicktags' => true);
 
 $ad_limit = 0;
 if (function_exists('fw_get_db_settings_option')) {
@@ -413,12 +413,12 @@ $ad_videos = array(
 											</div>
 											<div class="tg-box">
 												<label class="tg-fileuploadlabel" for="tg-photogallery">
-													<a href="javascript:;" id="upload-ad-photos" class="tg-fileinput sp-upload-container">
-														<i class="lnr lnr-cloud-upload"></i>
-														<span><?php esc_html_e('Or Drag Your Files Here To Upload', 'listingo'); ?></span>
-
-													</a>
-													<div id="plupload-ad-container"></div> 
+													<div id="plupload-ad-container">
+														<a href="javascript:;" id="upload-ad-photos" class="tg-fileinput sp-upload-container">
+															<i class="lnr lnr-cloud-upload"></i>
+															<span><?php esc_html_e('Or Drag Your Files Here To Upload', 'listingo'); ?></span>
+														</a>
+													</div> 
 												</label>
 												<div class="tg-ad sp-profile-ad-photos">
 													<div class="tg-galleryimages">

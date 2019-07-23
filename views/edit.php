@@ -19,7 +19,7 @@ if (!empty($_GET['identity'])) {
 
 $content = esc_html__('Ad detail will be here', 'listingo');
 $placeholder = fw_get_template_customizations_directory_uri() . '/extensions/ads/static/img/thumbnails/placeholder.jpg';
-$settings = array('media_buttons' => false,'quicktags' => false);
+$settings = array('media_buttons' => false,'quicktags' => true);
 $edit_id = !empty($_GET['id']) ? intval($_GET['id']) : '';
 $post_author = get_post_field('post_author', $edit_id);
 $status = get_post_status($edit_id);
@@ -508,12 +508,12 @@ $timezones = apply_filters('listingo_time_zones', array());
 														</div>
 														<div class="tg-box">
 															<label class="tg-fileuploadlabel" for="tg-photogallery">
-																<a href="javascript:;" id="upload-ad-photos" class="tg-fileinput sp-upload-container">
-																	<i class="lnr lnr-cloud-upload"></i>
-																	<span><?php esc_html_e('Or Drag Your Files Here To Upload', 'listingo'); ?></span>
-
-																</a>
-																<div id="plupload-ad-container"></div> 
+																<div id="plupload-ad-container">
+																	<a href="javascript:;" id="upload-ad-photos" class="tg-fileinput sp-upload-container">
+																		<i class="lnr lnr-cloud-upload"></i>
+																		<span><?php esc_html_e('Or Drag Your Files Here To Upload', 'listingo'); ?></span>
+																	</a>
+																</div> 
 															</label>
 															<div class="tg-ad sp-profile-ad-photos">
 																<div class="tg-galleryimages">
