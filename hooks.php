@@ -143,9 +143,10 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 
     function fw_ext_listingo_process_ads() {        	
         global $current_user, $wp_roles, $userdata;
+		
         if (function_exists('listingo_is_demo_site')) {
             listingo_is_demo_site();
-        }; //if demo site then prevent
+        } //if demo site then prevent
 
         do_action('listingo_is_action_allow'); //is action allow
 
@@ -377,15 +378,17 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 		    //Featured ad			
 			if( !empty( $ad_type ) && $ad_type === 'featured' ) {
 				$ad_db_meta['featured'] = $ad_type;
-				$is_featured_allowed = listingo_get_subscription_meta('is_ad_featured', $current_user->ID);
-				if( !empty( $is_featured_allowed ) && $is_featured_allowed == '1' ){
+				$is_featured_allowed = listingo_get_subscription_meta('subscription_featured_ads', $current_user->ID);
+				if( !empty( $is_featured_allowed ) && $is_featured_allowed > 0 ){
 					//Allowed
 					$get_featured_time = listingo_get_subscription_meta('subscription_ad_featured_expiry', $current_user->ID);			
 					update_post_meta($post_id, '_featured_timestamp', $get_featured_time);
-					$featured_count = get_user_meta($current_user->ID, 'featured_ads', true);
-					$featured_count = !empty( $featured_count ) ? $featured_count : 0;
-					$featured_count = $featured_count + 1;
-					update_user_meta($current_user->ID, 'featured_ads', $featured_count);
+					
+					$sp_subscription = get_user_meta($current_user->ID, 'sp_subscription', true);
+					$sp_subscription['subscription_featured_ads'] = !empty( $sp_subscription['subscription_featured_ads'] ) ? $sp_subscription['subscription_featured_ads'] - 1 : 0;
+					$sp_subscription['subscription_ads'] = !empty( $sp_subscription['subscription_ads'] ) ? $sp_subscription['subscription_ads'] - 1 : 0;
+					update_user_meta($current_user->ID, 'sp_subscription', $sp_subscription);
+
 				} else {
 					$ad_db_meta['featured'] = 'standard';
 					update_post_meta($post_id, '_featured_timestamp', 0);
@@ -555,15 +558,16 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
                 //Featured ad			
 				if( !empty( $ad_type ) && $ad_type === 'featured' ) {
 					$ad_db_meta['featured'] = $ad_type;
-					$is_featured_allowed = listingo_get_subscription_meta('is_ad_featured', $current_user->ID);
-					if( !empty( $is_featured_allowed ) && $is_featured_allowed == '1' ){
+					$is_featured_allowed = listingo_get_subscription_meta('subscription_featured_ads', $current_user->ID);
+					if( !empty( $is_featured_allowed ) && $is_featured_allowed > 0 ){
 						//Allowed
 						$get_featured_time = listingo_get_subscription_meta('subscription_ad_featured_expiry', $current_user->ID);			
 						update_post_meta($post_id, '_featured_timestamp', $get_featured_time);
-						$featured_count = get_user_meta($current_user->ID, 'featured_ads', true);
-						$featured_count = !empty( $featured_count ) ? $featured_count : 0;
-						$featured_count = $featured_count + 1;
-						update_user_meta($current_user->ID, 'featured_ads', $featured_count);
+						
+						$sp_subscription = get_user_meta($current_user->ID, 'sp_subscription', true);
+						$sp_subscription['subscription_featured_ads'] = !empty( $sp_subscription['subscription_featured_ads'] ) ? $sp_subscription['subscription_featured_ads'] - 1 : 0;
+						$sp_subscription['subscription_ads'] = !empty( $sp_subscription['subscription_ads'] ) ? $sp_subscription['subscription_ads'] - 1 : 0;
+						update_user_meta($current_user->ID, 'sp_subscription', $sp_subscription);
 					} else {
 						$ad_db_meta['featured'] = 'standard';
 						update_post_meta($post_id, '_featured_timestamp', 0);
@@ -764,17 +768,17 @@ if (!function_exists('listingo_save_ad_meta_data')) {
 					$user_identity  = get_post_field( 'post_author', $post_id );
 					
 					$ad_db_meta['featured'] = $ad_type;
-					$is_featured_allowed = listingo_get_subscription_meta('is_ad_featured', $user_identity);
+					$is_featured_allowed = listingo_get_subscription_meta('subscription_featured_ads', $user_identity);
 					
-					if( !empty( $is_featured_allowed ) && $is_featured_allowed == '1' ){
-						//Allowed
+					if( !empty( $is_featured_allowed ) && $is_featured_allowed > 0 ){
 						$get_featured_time = listingo_get_subscription_meta('subscription_ad_featured_expiry', $user_identity);			
 						update_post_meta($post_id, '_featured_timestamp', $get_featured_time);
-						$featured_count = get_user_meta($user_identity, 'featured_ads', true);
-						$featured_count = !empty( $featured_count ) ? $featured_count : 0;
-						$featured_count = $featured_count + 1;
 						
-						update_user_meta($$user_identity, 'featured_ads', $featured_count);
+						$sp_subscription = get_user_meta($user_identity, 'sp_subscription', true);
+						$sp_subscription['subscription_featured_ads'] = !empty( $sp_subscription['subscription_featured_ads'] ) ? $sp_subscription['subscription_featured_ads'] - 1 : 0;
+						$sp_subscription['subscription_ads'] = !empty( $sp_subscription['subscription_ads'] ) ? $sp_subscription['subscription_ads'] - 1 : 0;
+						update_user_meta($user_identity, 'sp_subscription', $sp_subscription);
+						
 						
 					} else {
 						$ad_db_meta['featured'] = 'standard';
@@ -789,10 +793,12 @@ if (!function_exists('listingo_save_ad_meta_data')) {
 						//Already featured
 					} else {
 						$admin_featured_ads[] = $post_id;
-						$featured_count = get_user_meta($user_identity, 'featured_ads', true);
-						$featured_count = !empty( $featured_count ) ? $featured_count : 0;	
-						$featured_count = $featured_count + 1;						
-						update_user_meta($user_identity, 'featured_ads', $featured_count);
+						
+						$sp_subscription = get_user_meta($user_identity, 'sp_subscription', true);
+						$sp_subscription['subscription_featured_ads'] = !empty( $sp_subscription['subscription_featured_ads'] ) ? $sp_subscription['subscription_featured_ads'] - 1 : 0;
+						$sp_subscription['subscription_ads'] = !empty( $sp_subscription['subscription_ads'] ) ? $sp_subscription['subscription_ads'] - 1 : 0;
+						update_user_meta($user_identity, 'sp_subscription', $sp_subscription);
+
 						update_user_meta($user_identity, 'admin_featured_ads', $admin_featured_ads);
 					}
 					
@@ -1717,12 +1723,10 @@ if (!function_exists('listingo_get_db_ad_business_settings')) {
 if( !function_exists('listingo_featured_ad_selection') ){
 	function listingo_featured_ad_selection($user_id, $post_id = ''){
 		if( !empty( $user_id ) ) {
-			$is_featured_allowed = listingo_get_subscription_meta('is_ad_featured', $user_id);
 			$remaining_ftd_ads 	 = listingo_get_subscription_meta('subscription_featured_ads', $user_id);			
-			$featured_ads 		 = get_user_meta($user_id, 'featured_ads', true);
 			$remaining_ftd_ads   = !empty( $remaining_ftd_ads ) ? $remaining_ftd_ads : 0;	
-			$featured_ads 		 = !empty( $featured_ads ) ? $featured_ads : 0;
 			$selected 			 = ''; 
+			
 			if( !empty( $post_id ) ){
 				$_featured_timestamp = get_post_meta($post_id, '_featured_timestamp', true);
 					$current_time 	= time();	
@@ -1730,33 +1734,32 @@ if( !function_exists('listingo_featured_ad_selection') ){
 						$selected = 'selected';
 					}
 			}			
-			if( !empty( $is_featured_allowed ) && ( $is_featured_allowed == '1' ) ){ 
-				if( intval($remaining_ftd_ads) > intval($featured_ads) ){ 
-					ob_start();
-					?>
-					<fieldset>						
-					    <div class="tg-dashboardbox tg-basicinformation">
-							<h2><?php esc_html_e('Ad Type', 'listingo'); ?></h2>
-							<div class="tg-amenitiesfeaturesbox">
-								<div class="row">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
-										<div class="form-group">
-											<span class="tg-select">
-												<select name="featured_ad" class="sp-sub-categories">
-													<option value="standard" <?php echo esc_attr( $selected ); ?>><?php esc_html_e('Standard', 'listingo'); ?></option>
-													<option value="featured" <?php echo esc_attr( $selected ); ?>><?php esc_html_e('Featured', 'listingo'); ?></option>
-												</select>
-											</span>
-										</div>
+
+			if( intval($remaining_ftd_ads) > 0 ){ 
+				ob_start();
+				?>
+				<fieldset>						
+					<div class="tg-dashboardbox tg-basicinformation">
+						<h2><?php esc_html_e('Ad Type', 'listingo'); ?></h2>
+						<div class="tg-amenitiesfeaturesbox">
+							<div class="row">
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pull-left">
+									<div class="form-group">
+										<span class="tg-select">
+											<select name="featured_ad" class="sp-sub-categories">
+												<option value="standard" <?php echo esc_attr( $selected ); ?>><?php esc_html_e('Standard', 'listingo'); ?></option>
+												<option value="featured" <?php echo esc_attr( $selected ); ?>><?php esc_html_e('Featured', 'listingo'); ?></option>
+											</select>
+										</span>
 									</div>
 								</div>
 							</div>
 						</div>
-					</fieldset>	
-					<?php 
-				}
-				echo ob_get_clean();
-			}			
+					</div>
+				</fieldset>	
+				<?php 
+			}
+			echo ob_get_clean();		
 		} 		
 	}
 	add_action('listingo_featured_ad_selection', 'listingo_featured_ad_selection', 10, 2);
