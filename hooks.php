@@ -381,8 +381,15 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 				$is_featured_allowed = listingo_get_subscription_meta('subscription_featured_ads', $current_user->ID);
 				if( !empty( $is_featured_allowed ) && $is_featured_allowed > 0 ){
 					//Allowed
-					$get_featured_time = listingo_get_subscription_meta('subscription_ad_featured_expiry', $current_user->ID);			
-					update_post_meta($post_id, '_featured_timestamp', $get_featured_time);
+					$current_date = current_time('mysql');
+					$get_featured_time = listingo_get_subscription_meta('subscription_ad_featured_expiry', $current_user->ID);
+					
+					if( !empty( $get_featured_time ) && $get_featured_time > strtotime($current_date) ){
+						update_post_meta($post_id, '_featured_timestamp', 1);
+						update_post_meta($post_id, '_expiry_string', $get_featured_time);
+					} else{
+						update_post_meta($post_id, '_featured_timestamp', 0);
+					}
 					
 					$sp_subscription = get_user_meta($current_user->ID, 'sp_subscription', true);
 					$sp_subscription['subscription_featured_ads'] = !empty( $sp_subscription['subscription_featured_ads'] ) ? $sp_subscription['subscription_featured_ads'] - 1 : 0;
@@ -561,8 +568,16 @@ if (!function_exists('fw_ext_listingo_process_ads')) {
 					$is_featured_allowed = listingo_get_subscription_meta('subscription_featured_ads', $current_user->ID);
 					if( !empty( $is_featured_allowed ) && $is_featured_allowed > 0 ){
 						//Allowed
+						$current_date = current_time('mysql');
 						$get_featured_time = listingo_get_subscription_meta('subscription_ad_featured_expiry', $current_user->ID);			
 						update_post_meta($post_id, '_featured_timestamp', $get_featured_time);
+						
+						if( !empty( $get_featured_time ) && $get_featured_time > strtotime($current_date) ){
+							update_post_meta($post_id, '_featured_timestamp', 1);
+							update_post_meta($post_id, '_expiry_string', $get_featured_time);
+						} else{
+							update_post_meta($post_id, '_featured_timestamp', 0);
+						}
 						
 						$sp_subscription = get_user_meta($current_user->ID, 'sp_subscription', true);
 						$sp_subscription['subscription_featured_ads'] = !empty( $sp_subscription['subscription_featured_ads'] ) ? $sp_subscription['subscription_featured_ads'] - 1 : 0;
@@ -772,7 +787,15 @@ if (!function_exists('listingo_save_ad_meta_data')) {
 					
 					if( !empty( $is_featured_allowed ) && $is_featured_allowed > 0 ){
 						$get_featured_time = listingo_get_subscription_meta('subscription_ad_featured_expiry', $user_identity);			
-						update_post_meta($post_id, '_featured_timestamp', $get_featured_time);
+
+						$current_date = current_time('mysql');		
+
+						if( !empty( $get_featured_time ) && $get_featured_time > strtotime($current_date) ){
+							update_post_meta($post_id, '_featured_timestamp', 1);
+							update_post_meta($post_id, '_expiry_string', $get_featured_time);
+						} else{
+							update_post_meta($post_id, '_featured_timestamp', 0);
+						}
 						
 						$sp_subscription = get_user_meta($user_identity, 'sp_subscription', true);
 						$sp_subscription['subscription_featured_ads'] = !empty( $sp_subscription['subscription_featured_ads'] ) ? $sp_subscription['subscription_featured_ads'] - 1 : 0;
@@ -785,7 +808,6 @@ if (!function_exists('listingo_save_ad_meta_data')) {
 						update_post_meta($post_id, '_featured_timestamp', 0);
 					}
 
-					
 					$admin_featured_ads = get_user_meta($user_identity, 'admin_featured_ads', true);
 					$admin_featured_ads = !empty( $admin_featured_ads ) ? $admin_featured_ads : array();
 					
@@ -1073,7 +1095,7 @@ if (!function_exists('listingo_get_ad_featured_tag')) {
     function listingo_get_ad_featured_tag($ad_id) {
 		$featured_timestamp = get_post_meta($ad_id, '_featured_timestamp', true);
 		$now	= current_time('mysql');
-		if( !empty( $featured_timestamp ) && $featured_timestamp > strtotime( $now ) ){?>
+		if( !empty( $featured_timestamp ) && ( $featured_timestamp > strtotime( $now ) || $featured_timestamp == 1 ) ){?>
 			<span class="tg-posttag"><i class="fa fa-bolt"></i></span>
 		<?php }
 	}

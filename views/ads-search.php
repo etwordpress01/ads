@@ -98,18 +98,17 @@ $query_args = array(
     'posts_per_page'        => $showposts,
     'post_type'             => 'sp_ads',
     'paged'                 => $paged,
-    'order'                 => $order,
     'orderby'               => $sort_by,
     'post_status'           => 'publish',
     'ignore_sticky_posts'   => 1
 );
 
-//featured on top by default
-if( empty( $sort_by ) ){
-	/*$query_args['order'] 	= 'DESC';
-	$query_args['orderby'] 	= 'meta_value_num';
-	$query_args['meta_key'] = '_featured_timestamp';*/
-}
+$query_args['meta_key'] = '_featured_timestamp';
+$query_args['orderby']	 = array( 
+	'meta_value' 	=> 'DESC', 
+	'ID'      		=> 'DESC',
+); 
+
 
 //meta query
 if (!empty($meta_query_args)) {
